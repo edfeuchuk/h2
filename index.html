@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rotating Truck</title>
     <style>
-        /* Reset the page */
+        /* Reset styles */
         body, html {
             margin: 0;
             padding: 0;
-            overflow: hidden; /* Prevent scrolling */
+            overflow: hidden; /* No scrollbars */
             background-color: #000; /* Black background for contrast */
             display: flex;
             flex-direction: column;
@@ -18,9 +18,10 @@
             height: 100%;
         }
 
-        /* Button Styling */
+        /* Transfer Button */
         .transfer-button {
-            margin-top: 20px;
+            position: absolute;
+            bottom: 20px;
             padding: 15px 40px;
             font-size: 20px;
             color: #fff;
@@ -29,6 +30,7 @@
             border-radius: 60px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            z-index: 1;
         }
 
         .transfer-button:hover {
@@ -41,59 +43,55 @@
     </style>
 </head>
 <body>
-    <!-- 3D Model Fullscreen Canvas -->
+    <!-- Fullscreen 3D Model Canvas -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
+    <!-- Transfer Domain Button -->
+    <button class="transfer-button">Transfer Domain</button>
+
     <script>
-        // Set up the Three.js Scene
+        // Fullscreen Three.js setup
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight - 80); // Reserve space for button
+        renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        // Add Lighting
+        // Lighting
         const light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.5);
         scene.add(light);
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
         directionalLight.position.set(5, 10, 7.5);
         scene.add(directionalLight);
 
-        // Load 3D Model
+        // Load the 3D model
         const loader = new THREE.GLTFLoader();
         let truck;
         loader.load('h2acty.glb', (gltf) => {
             truck = gltf.scene;
-            truck.scale.set(1.5, 1.5, 1.5);
-            truck.position.set(0, -0.5, 0);
+            truck.scale.set(2.5, 2.5, 2.5); // Adjust size
             scene.add(truck);
         });
 
-        // Camera Position
-        camera.position.set(0, 1, 5);
+        // Position camera
+        camera.position.set(0, 1.5, 8);
 
-        // Rotate Model
+        // Animation loop
         function animate() {
             requestAnimationFrame(animate);
-            if (truck) truck.rotation.y += 0.005;
+            if (truck) truck.rotation.y += 0.005; // Smooth rotation
             renderer.render(scene, camera);
         }
         animate();
 
-        // Responsive Resize
+        // Responsive canvas resize
         window.addEventListener('resize', () => {
-            renderer.setSize(window.innerWidth, window.innerHeight - 80); // Keep button space
-            camera.aspect = window.innerWidth / (window.innerHeight - 80);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
         });
-
-        // Add the Button
-        const button = document.createElement('button');
-        button.textContent = "Transfer Domain";
-        button.className = "transfer-button";
-        button.onclick = () => alert("Button Clicked!");
-        document.body.appendChild(button);
     </script>
 </body>
 </html>
