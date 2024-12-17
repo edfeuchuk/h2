@@ -9,24 +9,24 @@
         body, html {
             margin: 0;
             padding: 0;
-            background-color: #000;
+            background-color: #000; /* Black background */
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: flex-start;
             font-family: Arial, sans-serif;
         }
 
-        /* 3D Model Container */
+        /* Container for 3D Model */
         #model-container {
-            width: 65%; /* 65% width for desktop */
-            max-width: 800px;
-            aspect-ratio: 1; /* Maintain square aspect ratio */
+            width: 65%; /* Default width for desktop */
+            height: auto;
             position: relative;
         }
 
         @media (max-width: 768px) {
             #model-container {
-                width: 85%; /* 85% width for mobile */
+                width: 85%; /* Larger width for mobile */
             }
         }
 
@@ -37,10 +37,10 @@
             font-size: 20px;
             padding: 15px 40px;
             border: none;
-            border-radius: 60px;
+            border-radius: 60px; /* Pill-shaped button */
             cursor: pointer;
             transition: background-color 0.3s ease;
-            margin-top: 20px;
+            margin-top: 20px; /* Spacing below model */
         }
 
         .transfer-button:hover {
@@ -48,37 +48,29 @@
         }
 
         .transfer-button:focus {
-            outline: 2px solid #000;
-        }
-
-        @media (max-width: 768px) {
-            .transfer-button {
-                font-size: 16px;
-                padding: 12px 30px;
-            }
+            outline: 2px solid #000; /* Visible focus outline */
         }
     </style>
 </head>
 <body>
-    <!-- 3D Model Container -->
+    <!-- Container for the 3D model -->
     <div id="model-container"></div>
 
     <!-- Transfer Domain Button -->
     <button class="transfer-button">Transfer Domain</button>
 
-    <!-- Three.js and GLTFLoader -->
+    <!-- Include Three.js and GLTFLoader -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
     <script>
-        // Model container
+        // Select the container
         const container = document.getElementById('model-container');
 
-        // Three.js Scene Setup
+        // Three.js Setup
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(container.clientWidth, container.clientWidth); // Square size
         container.appendChild(renderer.domElement);
 
         // Lighting
@@ -90,18 +82,29 @@
         directionalLight.position.set(5, 10, 7.5);
         scene.add(directionalLight);
 
-        // Load 3D Model
+        // Load the GLB Model
         const loader = new THREE.GLTFLoader();
         let truck;
         loader.load('h2acty.glb', function (gltf) {
             truck = gltf.scene;
-            truck.scale.set(1.5, 1.5, 1.5);
-            truck.position.set(0, -1, 0);
+            truck.scale.set(1.2, 1.2, 1.2); // Scale appropriately
+            truck.position.set(0, -1, 0); // Center model
             scene.add(truck);
         });
 
-        // Adjust Camera
-        camera.position.set(0, 1.5, 6);
+        // Camera position
+        camera.position.set(0, 1.5, 5);
+
+        // Responsive Canvas Resize
+        function resizeRenderer() {
+            const width = container.clientWidth;
+            const height = width * 0.75; // Maintain 4:3 aspect ratio
+            renderer.setSize(width, height);
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+        }
+
+        window.addEventListener('resize', resizeRenderer);
 
         // Animation Loop
         function animate() {
@@ -109,16 +112,10 @@
             if (truck) truck.rotation.y += 0.002; // Slow spin
             renderer.render(scene, camera);
         }
-        animate();
 
-        // Resize Handling
-        function onResize() {
-            const size = container.clientWidth; // Keep it square
-            renderer.setSize(size, size);
-            camera.aspect = 1; // Square aspect ratio
-            camera.updateProjectionMatrix();
-        }
-        window.addEventListener('resize', onResize);
+        // Initial Setup
+        resizeRenderer();
+        animate();
     </script>
 </body>
 </html>
