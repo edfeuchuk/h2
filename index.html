@@ -18,10 +18,10 @@
             height: 100vh;
         }
 
-        /* Fullscreen Canvas */
+        /* Model Container fills 85% of the viewport width */
         #model-container {
-            width: 85vw; /* 85% of viewport width */
-            height: calc(85vw * 0.6); /* Adjust height dynamically for aspect ratio */
+            width: 85vw;
+            height: 85vh; /* Use most of the height */
         }
 
         /* Button Styling */
@@ -43,12 +43,12 @@
         }
 
         .transfer-button:focus {
-            outline: 3px solid #ffcc00; /* High visibility focus outline */
+            outline: 3px solid #ffcc00;
         }
     </style>
 </head>
 <body>
-    <!-- 3D Model Container -->
+    <!-- Model Container -->
     <div id="model-container"></div>
 
     <!-- Button -->
@@ -63,7 +63,7 @@
 
         // Scene, Camera, and Renderer
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(container.clientWidth, container.clientHeight);
         container.appendChild(renderer.domElement);
@@ -72,7 +72,7 @@
         const light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.5);
         scene.add(light);
 
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
         directionalLight.position.set(5, 10, 7.5);
         scene.add(directionalLight);
 
@@ -82,34 +82,32 @@
 
         loader.load('h2acty.glb', (gltf) => {
             truck = gltf.scene;
-            scene.add(truck);
 
-            // Fit the model to 85% of the screen width dynamically
+            // Scale the truck to fill 85% of the screen width
             const box = new THREE.Box3().setFromObject(truck);
             const size = box.getSize(new THREE.Vector3());
-            const maxDim = Math.max(size.x, size.y, size.z);
-
-            const scaleFactor = container.clientWidth / (maxDim * 1.2);
+            const scaleFactor = (container.clientWidth / size.x) * 0.85; // Scale to 85% width
             truck.scale.set(scaleFactor, scaleFactor, scaleFactor);
 
-            // Center the model
-            box.expandByScalar(0.5);
+            // Center the truck
             const center = box.getCenter(new THREE.Vector3());
             truck.position.set(-center.x, -center.y, -center.z);
 
-            // Adjust camera position to fit the model
-            camera.position.z = maxDim * 1.5;
+            scene.add(truck);
+
+            // Adjust camera to ensure the truck is fully visible
+            camera.position.z = Math.max(size.x, size.y) * scaleFactor * 1.5;
         });
 
         // Animation Loop
         function animate() {
             requestAnimationFrame(animate);
-            if (truck) truck.rotation.y += 0.005; // Controlled, smooth rotation
+            if (truck) truck.rotation.y += 0.005; // Smooth rotation
             renderer.render(scene, camera);
         }
         animate();
 
-        // Handle Responsive Resize
+        // Handle Window Resizing
         window.addEventListener('resize', () => {
             const width = container.clientWidth;
             const height = container.clientHeight;
