@@ -9,18 +9,13 @@
         body, html {
             margin: 0;
             padding: 0;
+            overflow: hidden; /* Prevent scrolling */
             background-color: #000;
-            overflow: hidden; /* Prevent scrollbars */
             display: flex;
             flex-direction: column;
             align-items: center;
-        }
-
-        /* Fullscreen Canvas */
-        canvas {
-            display: block;
-            width: 100vw;
-            height: auto; /* Maintain aspect ratio */
+            justify-content: center;
+            height: 100vh;
         }
 
         /* Button Styling */
@@ -49,17 +44,21 @@
     <!-- Three.js Canvas and Button -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+
+    <!-- Transfer Button -->
+    <button class="transfer-button">Transfer Domain</button>
+
     <script>
         // Scene, Camera, and Renderer
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight * 0.9); // Scale canvas to 90% of the screen height
-        document.body.appendChild(renderer.domElement);
+        renderer.setSize(window.innerWidth, window.innerHeight * 0.9); // Use 90% height for canvas
+        document.body.insertBefore(renderer.domElement, document.body.firstChild);
 
         // Lighting
-        const light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.5);
-        scene.add(light);
+        const ambientLight = new THREE.HemisphereLight(0xffffff, 0x444444, 1.5);
+        scene.add(ambientLight);
 
         const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
         directionalLight.position.set(5, 10, 7.5);
@@ -71,40 +70,39 @@
 
         loader.load('h2acty.glb', (gltf) => {
             truck = gltf.scene;
-            truck.scale.set(1, 1, 1); // Scale to a manageable size
-            truck.position.set(0, -0.5, 0); // Center the truck
             scene.add(truck);
 
-            // Automatically fit model in view
-            const box = new THREE.Box3().setFromObject(truck);
-            const size = box.getSize(new THREE.Vector3());
-            const maxDim = Math.max(size.x, size.y, size.z);
-            const fov = camera.fov * (Math.PI / 180);
-            const cameraZ = Math.abs(maxDim / Math.tan(fov / 2)) * 1.2;
-            camera.position.z = cameraZ;
+            // Scale the model based on window width
+            const scaleFactor = Math.min(window.innerWidth / 800, 1); // Scale proportionally, max scale = 1
+            truck.scale.set(scaleFactor, scaleFactor, scaleFactor);
+
+            truck.position.set(0, -1, 0); // Center the truck
+
+            // Adjust camera to fit the model
+            camera.position.z = 5;
         });
 
-        // Animate the model
+        // Animation loop with slower rotation
         function animate() {
             requestAnimationFrame(animate);
-            if (truck) truck.rotation.y += 0.005; // Rotate the model
+            if (truck) {
+                truck.rotation.y += 0.001; // Slow rotation
+            }
             renderer.render(scene, camera);
         }
         animate();
 
-        // Adjust canvas size on resize
+        // Resize handler to keep the canvas and model responsive
         window.addEventListener('resize', () => {
             renderer.setSize(window.innerWidth, window.innerHeight * 0.9);
             camera.aspect = window.innerWidth / (window.innerHeight * 0.9);
             camera.updateProjectionMatrix();
-        });
 
-        // Add Button
-        const button = document.createElement('button');
-        button.textContent = "Transfer Domain";
-        button.className = "transfer-button";
-        button.onclick = () => alert("Button clicked!");
-        document.body.appendChild(button);
+            if (truck) {
+                const scaleFactor = Math.min(window.innerWidth / 800, 1);
+                truck.scale.set(scaleFactor, scaleFactor, scaleFactor);
+            }
+        });
     </script>
 </body>
 </html>
