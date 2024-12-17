@@ -3,44 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive 3D Model</title>
+    <title>Rotating 3D Truck</title>
     <style>
         /* General Reset */
         body, html {
             margin: 0;
             padding: 0;
-            background-color: #000; /* Black background */
+            background-color: #000; /* Black background for contrast */
+            font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
-            font-family: Arial, sans-serif;
         }
 
-        /* Container for 3D Model */
+        /* Container for the 3D Model */
         #model-container {
-            width: 65%; /* Default width for desktop */
-            height: auto;
+            width: 65%; /* 65% on desktop */
+            height: 0;
+            padding-bottom: 45%; /* Aspect ratio for responsive height */
             position: relative;
         }
 
         @media (max-width: 768px) {
             #model-container {
-                width: 85%; /* Larger width for mobile */
+                width: 85%; /* 85% on mobile */
+                padding-bottom: 60%; /* Taller aspect ratio for mobile */
             }
         }
 
-        /* Transfer Domain Button */
+        /* Canvas inside container */
+        #model-container canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Transfer Button */
         .transfer-button {
             background-color: #306fdb;
             color: white;
             font-size: 20px;
             padding: 15px 40px;
             border: none;
-            border-radius: 60px; /* Pill-shaped button */
+            border-radius: 60px;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            margin-top: 20px; /* Spacing below model */
+            margin-top: 20px;
         }
 
         .transfer-button:hover {
@@ -48,74 +58,78 @@
         }
 
         .transfer-button:focus {
-            outline: 2px solid #000; /* Visible focus outline */
+            outline: 2px solid #000;
+        }
+
+        @media (max-width: 768px) {
+            .transfer-button {
+                font-size: 16px;
+                padding: 12px 30px;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Container for the 3D model -->
+    <!-- Container for the 3D Model -->
     <div id="model-container"></div>
 
     <!-- Transfer Domain Button -->
     <button class="transfer-button">Transfer Domain</button>
 
-    <!-- Include Three.js and GLTFLoader -->
+    <!-- Three.js and GLTFLoader -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
     <script>
-        // Select the container
         const container = document.getElementById('model-container');
 
-        // Three.js Setup
+        // Scene setup
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
         container.appendChild(renderer.domElement);
 
         // Lighting
         const light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.5);
-        light.position.set(0, 20, 0);
         scene.add(light);
 
         const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
         directionalLight.position.set(5, 10, 7.5);
         scene.add(directionalLight);
 
-        // Load the GLB Model
+        // Load the 3D Model
         const loader = new THREE.GLTFLoader();
         let truck;
         loader.load('h2acty.glb', function (gltf) {
             truck = gltf.scene;
-            truck.scale.set(1.2, 1.2, 1.2); // Scale appropriately
-            truck.position.set(0, -1, 0); // Center model
+            truck.scale.set(2.5, 2.5, 2.5); // Scale to fit view
+            truck.position.set(0, -0.5, 0); // Center the model
             scene.add(truck);
         });
 
         // Camera position
-        camera.position.set(0, 1.5, 5);
+        camera.position.set(0, 1, 4);
 
-        // Responsive Canvas Resize
-        function resizeRenderer() {
-            const width = container.clientWidth;
-            const height = width * 0.75; // Maintain 4:3 aspect ratio
-            renderer.setSize(width, height);
-            camera.aspect = width / height;
-            camera.updateProjectionMatrix();
-        }
-
-        window.addEventListener('resize', resizeRenderer);
-
-        // Animation Loop
+        // Animation loop
         function animate() {
             requestAnimationFrame(animate);
             if (truck) truck.rotation.y += 0.002; // Slow spin
             renderer.render(scene, camera);
         }
-
-        // Initial Setup
-        resizeRenderer();
         animate();
+
+        // Responsive resize handling
+        function onResize() {
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            renderer.setSize(width, height);
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+        }
+
+        window.addEventListener('resize', onResize);
+        onResize();
     </script>
 </body>
 </html>
