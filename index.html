@@ -55,17 +55,16 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
     <script>
-        // Select container
         const container = document.getElementById('model-container');
 
-        // Create Scene, Camera, and Renderer
+        // Scene, Camera, and Renderer
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(45, 16 / 9, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(container.clientWidth, container.clientHeight);
         container.appendChild(renderer.domElement);
 
-        // Add Lighting
+        // Lighting
         const light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.5);
         scene.add(light);
 
@@ -79,23 +78,28 @@
 
         loader.load('h2acty.glb', (gltf) => {
             truck = gltf.scene;
-            truck.scale.set(1, 1, 1); // Base scale
-            truck.position.set(0, -0.5, 0); // Center the truck
+
+            // Scale the truck up based on container size
+            const boundingBox = new THREE.Box3().setFromObject(truck);
+            const size = boundingBox.getSize(new THREE.Vector3());
+            const maxDim = Math.max(size.x, size.y, size.z);
+            const scaleFactor = container.clientWidth / (maxDim * 1.5); // Scale proportionally to container width
+            truck.scale.set(scaleFactor, scaleFactor, scaleFactor);
+
+            // Center the truck
+            const center = boundingBox.getCenter(new THREE.Vector3());
+            truck.position.set(-center.x, -center.y, -center.z);
+
             scene.add(truck);
 
-            // Adjust camera to fit model
-            const box = new THREE.Box3().setFromObject(truck);
-            const size = box.getSize(new THREE.Vector3());
-            const maxDim = Math.max(size.x, size.y, size.z);
-            const fov = camera.fov * (Math.PI / 180);
-            const distance = Math.abs(maxDim / Math.tan(fov / 2));
-            camera.position.z = distance * 1.5; // Zoom out to ensure visibility
+            // Adjust the camera distance
+            camera.position.z = maxDim * scaleFactor * 1.5;
         });
 
         // Animation Loop
         function animate() {
             requestAnimationFrame(animate);
-            if (truck) truck.rotation.y += 0.002; // Slower rotation
+            if (truck) truck.rotation.y += 0.003; // Smooth rotation
             renderer.render(scene, camera);
         }
         animate();
