@@ -13,33 +13,39 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             overflow: hidden;
             height: 100vh;
+            color: #fff; /* Ensure readable text on dark background */
         }
 
         /* Canvas fills 85% of the screen width */
         #model-container {
-            width: 85vw; /* 85% of the viewport width */
+            width: 85vw;
             height: calc(85vw * 9 / 16); /* Maintain 16:9 aspect ratio */
             position: relative;
         }
 
         /* Button Styling */
         .transfer-button {
-            margin-top: 20px;
+            margin-top: 10px; /* Reduced vertical margin */
+            margin-bottom: 50px; /* Added margin below button */
             padding: 15px 40px;
             font-size: 18px;
             color: #fff;
-            background-color: #306fdb;
+            background-color: #1a5dcd; /* WCAG-compliant contrast */
             border: none;
             border-radius: 60px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
         .transfer-button:hover {
-            background-color: #3375e5;
+            background-color: #154caa; /* Slightly darker on hover */
+            transform: scale(1.05); /* Subtle hover effect */
+        }
+
+        .transfer-button:focus {
+            outline: 3px solid #ffcc00; /* WCAG compliant visible focus */
         }
     </style>
 </head>
@@ -48,7 +54,7 @@
     <div id="model-container"></div>
 
     <!-- Button -->
-    <button class="transfer-button">Transfer Domain</button>
+    <button class="transfer-button" aria-label="Transfer Domain">Transfer Domain</button>
 
     <!-- Include Three.js and GLTFLoader -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -83,7 +89,7 @@
             truck.position.set(0, -0.5, 0); // Center the truck
             scene.add(truck);
 
-            // Adjust camera to fit model
+            // Adjust camera to fit the model
             const box = new THREE.Box3().setFromObject(truck);
             const size = box.getSize(new THREE.Vector3());
             const maxDim = Math.max(size.x, size.y, size.z);
@@ -92,10 +98,10 @@
             camera.position.z = distance * 1.5; // Zoom out to ensure visibility
         });
 
-        // Animation Loop
+        // Animation Loop (20% faster)
         function animate() {
             requestAnimationFrame(animate);
-            if (truck) truck.rotation.y += 0.002; // Slower rotation
+            if (truck) truck.rotation.y += 0.0024; // Increased speed by 20%
             renderer.render(scene, camera);
         }
         animate();
