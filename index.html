@@ -18,16 +18,15 @@
             height: 100vh;
         }
 
-        /* Canvas fills 85% of the screen width */
+        /* Model Container */
         #model-container {
-            width: 85vw; /* 85% of the viewport width */
-            height: calc(85vw * 9 / 16); /* Maintain 16:9 aspect ratio */
-            position: relative;
+            width: 85vw; /* 85% of viewport width */
+            height: 85vh; /* Allow full height usage */
         }
 
         /* Button Styling */
         .transfer-button {
-            margin-top: 20px;
+            margin-top: 10px;
             padding: 15px 40px;
             font-size: 18px;
             color: #fff;
@@ -41,16 +40,20 @@
         .transfer-button:hover {
             background-color: #3375e5;
         }
+
+        .transfer-button:focus {
+            outline: 3px solid #ffcc00;
+        }
     </style>
 </head>
 <body>
-    <!-- 3D Model Container -->
+    <!-- Model Container -->
     <div id="model-container"></div>
 
     <!-- Button -->
     <button class="transfer-button">Transfer Domain</button>
 
-    <!-- Include Three.js and GLTFLoader -->
+    <!-- Three.js and GLTFLoader -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
@@ -79,39 +82,7 @@
         loader.load('h2acty.glb', (gltf) => {
             truck = gltf.scene;
 
-            // Scale the truck up based on container size
+            // Fit the truck to 85% of the screen width
             const boundingBox = new THREE.Box3().setFromObject(truck);
             const size = boundingBox.getSize(new THREE.Vector3());
-            const maxDim = Math.max(size.x, size.y, size.z);
-            const scaleFactor = container.clientWidth / (maxDim * 1.5); // Scale proportionally to container width
-            truck.scale.set(scaleFactor, scaleFactor, scaleFactor);
-
-            // Center the truck
-            const center = boundingBox.getCenter(new THREE.Vector3());
-            truck.position.set(-center.x, -center.y, -center.z);
-
-            scene.add(truck);
-
-            // Adjust the camera distance
-            camera.position.z = maxDim * scaleFactor * 1.5;
-        });
-
-        // Animation Loop
-        function animate() {
-            requestAnimationFrame(animate);
-            if (truck) truck.rotation.y += 0.003; // Smooth rotation
-            renderer.render(scene, camera);
-        }
-        animate();
-
-        // Handle Resize
-        window.addEventListener('resize', () => {
-            const width = container.clientWidth;
-            const height = container.clientHeight;
-            renderer.setSize(width, height);
-            camera.aspect = width / height;
-            camera.updateProjectionMatrix();
-        });
-    </script>
-</body>
-</html>
+            const scaleFactor = (container.clientWidth * 
