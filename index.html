@@ -3,27 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rotating Truck</title>
+    <title>Rotating Truck Model</title>
     <style>
-        /* General Reset */
-        body, html {
+        /* Reset Styles */
+        * {
             margin: 0;
             padding: 0;
-            background-color: #000; /* Black background for contrast */
+            box-sizing: border-box;
+        }
+
+        /* Page Layout */
+        body, html {
+            background-color: #000; /* Black background */
+            font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            height: 100%;
+            overflow-x: hidden;
         }
 
-        /* Fullscreen Canvas */
+        /* 3D Model Fullscreen Container */
         #model-container {
             width: 100%;
-            height: 70vh; /* Takes up 70% of the viewport height */
+            height: 75vh; /* 75% of the viewport height */
         }
 
-        /* Transfer Button */
+        /* Transfer Domain Button */
         .transfer-button {
             margin-top: 20px;
             padding: 15px 40px;
@@ -46,10 +53,10 @@
     </style>
 </head>
 <body>
-    <!-- 3D Model Container -->
+    <!-- Fullscreen 3D Model -->
     <div id="model-container"></div>
 
-    <!-- Button -->
+    <!-- Transfer Domain Button -->
     <button class="transfer-button">Transfer Domain</button>
 
     <!-- Three.js and GLTFLoader -->
@@ -59,9 +66,9 @@
     <script>
         const container = document.getElementById('model-container');
 
-        // Set up Three.js Scene
+        // Set up Three.js
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(container.clientWidth, container.clientHeight);
         container.appendChild(renderer.domElement);
@@ -70,32 +77,38 @@
         const light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.5);
         scene.add(light);
 
-        // Load the 3D Truck Model
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(5, 10, 7.5);
+        scene.add(directionalLight);
+
+        // Load the GLB Truck Model
         const loader = new THREE.GLTFLoader();
         let truck;
+
         loader.load('h2acty.glb', (gltf) => {
             truck = gltf.scene;
-            truck.scale.set(1.5, 1.5, 1.5); // Adjust size
+            truck.scale.set(1.5, 1.5, 1.5); // Scale the truck
+            truck.position.set(0, -0.5, 0); // Center the truck
             scene.add(truck);
         });
 
-        // Position Camera
+        // Camera position
         camera.position.set(0, 1, 6);
 
         // Animation Loop
         function animate() {
             requestAnimationFrame(animate);
-            if (truck) truck.rotation.y += 0.01; // Rotate the truck
+            if (truck) {
+                truck.rotation.y += 0.01; // Rotate the truck
+            }
             renderer.render(scene, camera);
         }
         animate();
 
-        // Resize Handling
+        // Responsive Resize
         window.addEventListener('resize', () => {
-            const width = container.clientWidth;
-            const height = container.clientHeight;
-            renderer.setSize(width, height);
-            camera.aspect = width / height;
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            camera.aspect = container.clientWidth / container.clientHeight;
             camera.updateProjectionMatrix();
         });
     </script>
