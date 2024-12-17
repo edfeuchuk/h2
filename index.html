@@ -3,42 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive 3D Model with Button</title>
+    <title>Responsive 3D Model</title>
     <style>
         /* General Reset */
         body, html {
             margin: 0;
             padding: 0;
-            background-color: #000; /* Black background */
+            background-color: #000;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
             font-family: Arial, sans-serif;
         }
 
-        /* Container for the 3D Model */
+        /* 3D Model Container */
         #model-container {
-            width: 65%; /* Default width for desktop */
-            height: 0;
-            padding-top: 65%; /* Makes it square by default */
+            width: 65%; /* 65% width for desktop */
+            max-width: 800px;
+            aspect-ratio: 1; /* Maintain square aspect ratio */
             position: relative;
         }
 
         @media (max-width: 768px) {
             #model-container {
-                width: 85%; /* Larger width for mobile */
-                padding-top: 85%; /* Keep it square on mobile */
+                width: 85%; /* 85% width for mobile */
             }
-        }
-
-        /* 3D Canvas Fills Container */
-        #model-container canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
         }
 
         /* Transfer Domain Button */
@@ -77,18 +66,19 @@
     <!-- Transfer Domain Button -->
     <button class="transfer-button">Transfer Domain</button>
 
-    <!-- Include Three.js and GLTFLoader -->
+    <!-- Three.js and GLTFLoader -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
     <script>
+        // Model container
         const container = document.getElementById('model-container');
 
-        // Scene, Camera, Renderer
+        // Three.js Scene Setup
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(45, container.offsetWidth / container.offsetHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(container.offsetWidth, container.offsetHeight);
+        renderer.setSize(container.clientWidth, container.clientWidth); // Square size
         container.appendChild(renderer.domElement);
 
         // Lighting
@@ -100,7 +90,7 @@
         directionalLight.position.set(5, 10, 7.5);
         scene.add(directionalLight);
 
-        // Load GLB Model
+        // Load 3D Model
         const loader = new THREE.GLTFLoader();
         let truck;
         loader.load('h2acty.glb', function (gltf) {
@@ -110,8 +100,8 @@
             scene.add(truck);
         });
 
-        // Camera Position
-        camera.position.set(0, 2, 6);
+        // Adjust Camera
+        camera.position.set(0, 1.5, 6);
 
         // Animation Loop
         function animate() {
@@ -121,14 +111,14 @@
         }
         animate();
 
-        // Resize Handler
-        window.addEventListener('resize', () => {
-            const width = container.offsetWidth;
-            const height = width; // Keep it square
-            renderer.setSize(width, height);
-            camera.aspect = width / height;
+        // Resize Handling
+        function onResize() {
+            const size = container.clientWidth; // Keep it square
+            renderer.setSize(size, size);
+            camera.aspect = 1; // Square aspect ratio
             camera.updateProjectionMatrix();
-        });
+        }
+        window.addEventListener('resize', onResize);
     </script>
 </body>
 </html>
