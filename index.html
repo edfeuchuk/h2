@@ -9,20 +9,23 @@
         body, html {
             margin: 0;
             padding: 0;
-            overflow: hidden; /* Prevent scrollbars */
             background-color: #000;
+            overflow: hidden; /* Prevent scrollbars */
             display: flex;
             flex-direction: column;
             align-items: center;
-            height: 100vh;
+        }
+
+        /* Fullscreen Canvas */
+        canvas {
+            display: block;
+            width: 100vw;
+            height: auto; /* Maintain aspect ratio */
         }
 
         /* Button Styling */
         .transfer-button {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
+            margin-top: 10px;
             padding: 15px 40px;
             font-size: 18px;
             color: #fff;
@@ -31,7 +34,6 @@
             border-radius: 60px;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            z-index: 10;
         }
 
         .transfer-button:hover {
@@ -44,51 +46,45 @@
     </style>
 </head>
 <body>
-    <!-- Transfer Domain Button -->
-    <button class="transfer-button">Transfer Domain</button>
-
-    <!-- Include Three.js -->
+    <!-- Three.js Canvas and Button -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-
     <script>
-        // Scene setup
+        // Scene, Camera, and Renderer
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setSize(window.innerWidth, window.innerHeight * 0.9); // Scale canvas to 90% of the screen height
         document.body.appendChild(renderer.domElement);
 
         // Lighting
         const light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.5);
         scene.add(light);
+
         const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
         directionalLight.position.set(5, 10, 7.5);
         scene.add(directionalLight);
 
-        // Load 3D Model
+        // Load the 3D Model
         const loader = new THREE.GLTFLoader();
         let truck;
 
         loader.load('h2acty.glb', (gltf) => {
             truck = gltf.scene;
-            truck.scale.set(2, 2, 2); // Scale the model
-            truck.position.set(0, -1, 0); // Lower the model to center it
+            truck.scale.set(1, 1, 1); // Scale to a manageable size
+            truck.position.set(0, -0.5, 0); // Center the truck
             scene.add(truck);
 
-            // Adjust camera to fit the model
+            // Automatically fit model in view
             const box = new THREE.Box3().setFromObject(truck);
             const size = box.getSize(new THREE.Vector3());
             const maxDim = Math.max(size.x, size.y, size.z);
             const fov = camera.fov * (Math.PI / 180);
-            const cameraZ = Math.abs(maxDim / Math.tan(fov / 2)) * 1.2; // Ensure the model fits
+            const cameraZ = Math.abs(maxDim / Math.tan(fov / 2)) * 1.2;
             camera.position.z = cameraZ;
         });
 
-        // Camera setup
-        camera.position.set(0, 1, 6);
-
-        // Animation Loop
+        // Animate the model
         function animate() {
             requestAnimationFrame(animate);
             if (truck) truck.rotation.y += 0.005; // Rotate the model
@@ -96,12 +92,19 @@
         }
         animate();
 
-        // Handle window resizing
+        // Adjust canvas size on resize
         window.addEventListener('resize', () => {
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            camera.aspect = window.innerWidth / window.innerHeight;
+            renderer.setSize(window.innerWidth, window.innerHeight * 0.9);
+            camera.aspect = window.innerWidth / (window.innerHeight * 0.9);
             camera.updateProjectionMatrix();
         });
+
+        // Add Button
+        const button = document.createElement('button');
+        button.textContent = "Transfer Domain";
+        button.className = "transfer-button";
+        button.onclick = () => alert("Button clicked!");
+        document.body.appendChild(button);
     </script>
 </body>
 </html>
