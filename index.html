@@ -5,101 +5,113 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rotating Truck</title>
     <style>
-        /* Reset Styles */
+        /* General Reset */
         body, html {
             margin: 0;
             padding: 0;
-            overflow: hidden; /* Prevent scrollbars */
-            background-color: #000;
+            overflow: hidden;
+            background-color: #000; /* Dark background */
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             height: 100vh;
+        }
+
+        /* Canvas Container */
+        #model-container {
+            width: 85vw; /* Always 85% of the viewport width */
+            height: calc(85vw * 9 / 16); /* Maintain 16:9 aspect ratio */
+            position: relative;
         }
 
         /* Button Styling */
         .transfer-button {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
+            margin-top: 10px; /* Reduced vertical spacing */
+            margin-bottom: 50px; /* 50px margin below button */
             padding: 15px 40px;
             font-size: 18px;
             color: #fff;
-            background-color: #306fdb;
+            background-color: #1a5dcd;
             border: none;
             border-radius: 60px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
-            z-index: 10;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
         .transfer-button:hover {
-            background-color: #3375e5;
+            background-color: #154caa;
+            transform: scale(1.05); /* Subtle scaling effect */
         }
 
         .transfer-button:focus {
-            outline: 2px solid #fff;
+            outline: 3px solid #ffcc00; /* Bright yellow for accessibility */
         }
     </style>
 </head>
 <body>
-    <!-- Transfer Domain Button -->
-    <button class="transfer-button">Transfer Domain</button>
+    <!-- Model Container -->
+    <div id="model-container"></div>
 
-    <!-- Include Three.js -->
+    <!-- Button -->
+    <button class="transfer-button" aria-label="Transfer Domain">Transfer Domain</button>
+
+    <!-- Include Three.js and GLTFLoader -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
     <script>
-        // Scene setup
+        const container = document.getElementById('model-container');
+
+        // Set up Three.js
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
 
         // Lighting
         const light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.5);
         scene.add(light);
+
         const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
         directionalLight.position.set(5, 10, 7.5);
         scene.add(directionalLight);
 
-        // Load 3D Model
+        // Load the 3D Model
         const loader = new THREE.GLTFLoader();
         let truck;
 
         loader.load('h2acty.glb', (gltf) => {
             truck = gltf.scene;
-            truck.scale.set(2, 2, 2); // Scale the model
-            truck.position.set(0, -1, 0); // Lower the model to center it
+
+            // Scale truck to fill the screen at 85% width
+            const boundingBox = new THREE.Box3().setFromObject(truck);
+            const size = boundingBox.getSize(new THREE.Vector3());
+            const scaleFactor = container.clientWidth / size.x * 0.85; // Scale to 85% of width
+            truck.scale.set(scaleFactor, scaleFactor, scaleFactor);
+            truck.position.y = -size.y * scaleFactor / 2; // Center vertically
             scene.add(truck);
 
-            // Adjust camera to fit the model
-            const box = new THREE.Box3().setFromObject(truck);
-            const size = box.getSize(new THREE.Vector3());
-            const maxDim = Math.max(size.x, size.y, size.z);
-            const fov = camera.fov * (Math.PI / 180);
-            const cameraZ = Math.abs(maxDim / Math.tan(fov / 2)) * 1.2; // Ensure the model fits
-            camera.position.z = cameraZ;
+            // Adjust camera
+            camera.position.z = 10; // Move the camera back to view the entire model
         });
-
-        // Camera setup
-        camera.position.set(0, 1, 6);
 
         // Animation Loop
         function animate() {
             requestAnimationFrame(animate);
-            if (truck) truck.rotation.y += 0.005; // Rotate the model
+            if (truck) truck.rotation.y += 0.0024; // Slow rotation speed
             renderer.render(scene, camera);
         }
         animate();
 
-        // Handle window resizing
+        // Responsive Resize
         window.addEventListener('resize', () => {
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            camera.aspect = window.innerWidth / window.innerHeight;
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+
+            renderer.setSize(width, height);
+            camera.aspect = width / height;
             camera.updateProjectionMatrix();
         });
     </script>
