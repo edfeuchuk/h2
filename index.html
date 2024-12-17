@@ -5,32 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rotating Truck</title>
     <style>
-        /* Reset styles */
+        /* Reset Styles */
         body, html {
             margin: 0;
             padding: 0;
-            overflow: hidden; /* No scrollbars */
-            background-color: #000; /* Black background for contrast */
+            overflow: hidden; /* Prevent scrollbars */
+            background-color: #000;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            height: 100%;
+            height: 100vh;
         }
 
-        /* Transfer Button */
+        /* Button Styling */
         .transfer-button {
             position: absolute;
             bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
             padding: 15px 40px;
-            font-size: 20px;
+            font-size: 18px;
             color: #fff;
             background-color: #306fdb;
             border: none;
             border-radius: 60px;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            z-index: 1;
+            z-index: 10;
         }
 
         .transfer-button:hover {
@@ -43,15 +44,15 @@
     </style>
 </head>
 <body>
-    <!-- Fullscreen 3D Model Canvas -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-
     <!-- Transfer Domain Button -->
     <button class="transfer-button">Transfer Domain</button>
 
+    <!-- Include Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+
     <script>
-        // Fullscreen Three.js setup
+        // Scene setup
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -61,32 +62,41 @@
         // Lighting
         const light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.5);
         scene.add(light);
-
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
         directionalLight.position.set(5, 10, 7.5);
         scene.add(directionalLight);
 
-        // Load the 3D model
+        // Load 3D Model
         const loader = new THREE.GLTFLoader();
         let truck;
+
         loader.load('h2acty.glb', (gltf) => {
             truck = gltf.scene;
-            truck.scale.set(2.5, 2.5, 2.5); // Adjust size
+            truck.scale.set(2, 2, 2); // Scale the model
+            truck.position.set(0, -1, 0); // Lower the model to center it
             scene.add(truck);
+
+            // Adjust camera to fit the model
+            const box = new THREE.Box3().setFromObject(truck);
+            const size = box.getSize(new THREE.Vector3());
+            const maxDim = Math.max(size.x, size.y, size.z);
+            const fov = camera.fov * (Math.PI / 180);
+            const cameraZ = Math.abs(maxDim / Math.tan(fov / 2)) * 1.2; // Ensure the model fits
+            camera.position.z = cameraZ;
         });
 
-        // Position camera
-        camera.position.set(0, 1.5, 8);
+        // Camera setup
+        camera.position.set(0, 1, 6);
 
-        // Animation loop
+        // Animation Loop
         function animate() {
             requestAnimationFrame(animate);
-            if (truck) truck.rotation.y += 0.005; // Smooth rotation
+            if (truck) truck.rotation.y += 0.005; // Rotate the model
             renderer.render(scene, camera);
         }
         animate();
 
-        // Responsive canvas resize
+        // Handle window resizing
         window.addEventListener('resize', () => {
             renderer.setSize(window.innerWidth, window.innerHeight);
             camera.aspect = window.innerWidth / window.innerHeight;
