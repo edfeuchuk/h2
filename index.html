@@ -3,25 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>H2</title>
+    <title>Responsive 3D Model with Button</title>
     <style>
         /* General Reset */
         body, html {
             margin: 0;
             padding: 0;
-            overflow: hidden;
             background-color: #000; /* Black background for contrast */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
+            font-family: Arial, sans-serif;
         }
 
         /* 3D Canvas Container */
         #model-container {
             width: 100%;
-            height: 80vh; /* Model takes up 80% of the viewport height */
+            height: 80vh; /* Model container takes up 80% of the viewport height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* Transfer Domain Button */
@@ -34,7 +32,8 @@
             border-radius: 60px; /* Pill-shaped button */
             cursor: pointer;
             transition: background-color 0.3s ease; /* Smooth hover effect */
-            margin-top: 20px; /* Space between model and button */
+            margin: 30px auto; /* Center the button */
+            display: block;
         }
 
         .transfer-button:hover {
@@ -100,9 +99,7 @@
         // Animation Loop
         function animate() {
             requestAnimationFrame(animate);
-            if (truck) {
-                truck.rotation.y += 0.002; // Slow spin
-            }
+            if (truck) truck.rotation.y += 0.002; // Slow spin
             renderer.render(scene, camera);
         }
         animate();
