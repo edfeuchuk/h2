@@ -10,61 +10,57 @@
             margin: 0;
             padding: 0;
             background-color: #000;
-            overflow: hidden;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
             height: 100vh;
         }
 
-        /* Full Page Canvas */
+        /* Canvas fills 85% of the screen width */
         #model-container {
-            width: 85vw; /* 85% of viewport width */
-            height: 85vh; /* Use 85% of viewport height */
+            width: 85vw; /* 85% of the viewport width */
+            height: calc(85vw * 9 / 16); /* Maintain 16:9 aspect ratio */
+            position: relative;
         }
 
         /* Button Styling */
         .transfer-button {
-            margin-top: 10px;
-            margin-bottom: 50px; /* Added spacing below */
+            margin-top: 20px;
             padding: 15px 40px;
             font-size: 18px;
             color: #fff;
-            background-color: #1a5dcd;
+            background-color: #306fdb;
             border: none;
             border-radius: 60px;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            transition: background-color 0.3s ease;
         }
 
         .transfer-button:hover {
-            background-color: #154caa;
-            transform: scale(1.05);
-        }
-
-        .transfer-button:focus {
-            outline: 3px solid #ffcc00; /* High contrast for WCAG compliance */
+            background-color: #3375e5;
         }
     </style>
 </head>
 <body>
-    <!-- Model Container -->
+    <!-- 3D Model Container -->
     <div id="model-container"></div>
 
     <!-- Button -->
-    <button class="transfer-button" aria-label="Transfer Domain">Transfer Domain</button>
+    <button class="transfer-button">Transfer Domain</button>
 
     <!-- Include Three.js and GLTFLoader -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
     <script>
+        // Select container
         const container = document.getElementById('model-container');
 
         // Create Scene, Camera, and Renderer
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(45, 16 / 9, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(container.clientWidth, container.clientHeight);
         container.appendChild(renderer.domElement);
@@ -73,7 +69,7 @@
         const light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.5);
         scene.add(light);
 
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
         directionalLight.position.set(5, 10, 7.5);
         scene.add(directionalLight);
 
@@ -83,33 +79,33 @@
 
         loader.load('h2acty.glb', (gltf) => {
             truck = gltf.scene;
-
-            // Dynamically scale the model
-            truck.scale.set(3, 3, 3); // Larger base scale
-            truck.position.set(0, -1, 0); // Center the model
+            truck.scale.set(1, 1, 1); // Base scale
+            truck.position.set(0, -0.5, 0); // Center the truck
             scene.add(truck);
 
-            // Adjust camera to ensure model fits
+            // Adjust camera to fit model
             const box = new THREE.Box3().setFromObject(truck);
             const size = box.getSize(new THREE.Vector3());
             const maxDim = Math.max(size.x, size.y, size.z);
             const fov = camera.fov * (Math.PI / 180);
             const distance = Math.abs(maxDim / Math.tan(fov / 2));
-            camera.position.z = distance * 1.2; // Adjust camera for full visibility
+            camera.position.z = distance * 1.5; // Zoom out to ensure visibility
         });
 
         // Animation Loop
         function animate() {
             requestAnimationFrame(animate);
-            if (truck) truck.rotation.y += 0.003; // Slightly faster rotation
+            if (truck) truck.rotation.y += 0.002; // Slower rotation
             renderer.render(scene, camera);
         }
         animate();
 
-        // Responsive Resize
+        // Handle Resize
         window.addEventListener('resize', () => {
-            renderer.setSize(container.clientWidth, container.clientHeight);
-            camera.aspect = container.clientWidth / container.clientHeight;
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            renderer.setSize(width, height);
+            camera.aspect = width / height;
             camera.updateProjectionMatrix();
         });
     </script>
