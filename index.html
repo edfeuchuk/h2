@@ -3,36 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive 3D Model</title>
+    <title>3D Truck Responsive</title>
     <style>
-        /* Reset styles */
+        /* General Reset */
         body, html {
             margin: 0;
             padding: 0;
-            background-color: #000; /* Black background for contrast */
+            box-sizing: border-box;
+            background-color: #000;
+            font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
-            font-family: Arial, sans-serif;
         }
 
-        /* Full-width container for the 3D model */
+        /* Container for 3D Model */
         #model-container {
-            width: 65%; /* Default width on desktop */
-            height: 65vh; /* Responsive height to match width */
-            margin: 0 auto;
+            width: 65%;
+            max-width: 800px; /* Prevents extreme scaling on large screens */
+            aspect-ratio: 16 / 9; /* Maintain a nice widescreen aspect ratio */
             position: relative;
         }
 
         @media (max-width: 768px) {
             #model-container {
-                width: 85%; /* Wider on mobile */
-                height: 60vh; /* Slightly shorter height */
+                width: 85%; /* Wider container for mobile */
+                aspect-ratio: 16 / 10; /* Slightly taller aspect ratio for smaller screens */
             }
         }
 
-        /* Transfer Domain Button */
+        /* Button Styling */
         .transfer-button {
             background-color: #306fdb;
             color: white;
@@ -41,8 +41,8 @@
             border: none;
             border-radius: 60px;
             cursor: pointer;
+            margin-top: 20px;
             transition: background-color 0.3s ease;
-            margin: 20px 0;
         }
 
         .transfer-button:hover {
@@ -55,7 +55,7 @@
     </style>
 </head>
 <body>
-    <!-- 3D Model Container -->
+    <!-- Container for the 3D Model -->
     <div id="model-container"></div>
 
     <!-- Transfer Domain Button -->
@@ -66,13 +66,15 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
     <script>
+        // Reference to the container
         const container = document.getElementById('model-container');
 
-        // Three.js Scene Setup
+        // Three.js setup
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(50, 16 / 9, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(container.clientWidth, container.clientHeight);
+
+        renderer.setSize(container.offsetWidth, container.offsetHeight);
         container.appendChild(renderer.domElement);
 
         // Lighting
@@ -80,42 +82,48 @@
         light.position.set(0, 20, 0);
         scene.add(light);
 
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
         directionalLight.position.set(5, 10, 7.5);
         scene.add(directionalLight);
 
-        // Load the GLB Model
+        // Load the GLB model
         const loader = new THREE.GLTFLoader();
         let truck;
         loader.load('h2acty.glb', function (gltf) {
             truck = gltf.scene;
-            truck.scale.set(1.5, 1.5, 1.5); // Scale appropriately
-            truck.position.set(0, -0.5, 0); // Adjust position to center it
+
+            // Scale and center the model
+            truck.scale.set(1.5, 1.5, 1.5);
+            truck.position.set(0, -0.5, 0);
             scene.add(truck);
         });
 
         // Camera positioning
-        camera.position.set(0, 1, 6);
+        camera.position.set(0, 1, 5);
 
-        // Animation loop
+        // Animate the model
         function animate() {
             requestAnimationFrame(animate);
-            if (truck) truck.rotation.y += 0.002; // Slow rotation
+
+            if (truck) {
+                truck.rotation.y += 0.002; // Slow rotation
+            }
             renderer.render(scene, camera);
         }
         animate();
 
-        // Handle resizing
+        // Resize handling
         function onResize() {
-            const width = container.clientWidth;
-            const height = container.clientHeight;
+            const width = container.offsetWidth;
+            const height = width / (16 / 9); // Keep aspect ratio of 16:9
+
             renderer.setSize(width, height);
-            camera.aspect = width / height;
+            camera.aspect = 16 / 9;
             camera.updateProjectionMatrix();
         }
 
         window.addEventListener('resize', onResize);
-        onResize(); // Initial resize
+        onResize(); // Adjust size on load
     </script>
 </body>
 </html>
