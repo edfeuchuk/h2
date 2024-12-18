@@ -82,9 +82,8 @@
     auto-rotate 
     camera-controls 
     background-color="#ffffff"
-    rotation-speed="0.2deg"
-    // Note: rotation-speed is a placeholder. <model-viewer> doesn't support this attribute directly.
-    // To control rotation speed, we can use the auto-rotate-delay attribute or animate via JavaScript.
+    auto-rotate-delay="0"
+    auto-rotate-speed="1"
     >
     <!-- Fallback content for browsers that don't support <model-viewer> -->
     Your browser does not support 3D models.
@@ -102,18 +101,28 @@
 
     // Optional: Customize auto-rotate speed using JavaScript
     // Since <model-viewer> doesn't have a direct attribute for rotation speed,
-    // you can control the rotation via JavaScript for more precise control.
+    // we can implement a custom rotation.
 
+    // Uncomment the following code if you prefer manual rotation control
+
+    /*
     const modelViewer = document.querySelector('model-viewer');
 
     // Function to rotate the model manually
     function rotateModel() {
-      // Increase the rotation around the Y-axis
-      modelViewer.cameraOrbit = `${parseFloat(modelViewer.cameraOrbit.split(' ')[0]) + 0.05}deg ${modelViewer.cameraOrbit.split(' ')[1]} ${modelViewer.cameraOrbit.split(' ')[2]}`;
+      // Get current orbit
+      let orbit = modelViewer.getCameraOrbit();
+      // Increase the theta (horizontal angle) by a small amount
+      orbit.theta = (parseFloat(orbit.theta) + 0.1) % 360;
+      // Apply the new orbit
+      modelViewer.cameraOrbit = `${orbit.theta}deg ${orbit.phi}deg ${orbit.radius}m`;
+      // Update the camera view
+      modelViewer.jumpCameraToGoal();
     }
 
-    // Set an interval to rotate the model every 50 milliseconds
-    setInterval(rotateModel, 50);
+    // Set an interval to rotate the model every 100 milliseconds
+    setInterval(rotateModel, 100);
+    */
   </script>
 
 </body>
