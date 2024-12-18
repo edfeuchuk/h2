@@ -9,6 +9,9 @@
   <script type="module" src="https://unpkg.com/@google/model-viewer@latest/dist/model-viewer.min.js"></script>
   <script nomodule src="https://unpkg.com/@google/model-viewer@latest/dist/model-viewer-legacy.min.js"></script>
   
+  <!-- Import Font Awesome for star icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-p0b8v1vt7Aa38VvnzrN9KXX7mR/xz5J2bJZjZs1djgb69v15jX5VqO66q8e7K3LdPXHzC23Rr+yR4HbaG6B0ZQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
   <style>
     /* Reset default margins and paddings */
     * {
@@ -40,9 +43,20 @@
       /* Removed box-shadow and border-radius */
     }
 
+    /* Style the star rating */
+    .star-rating {
+      margin: 20px 0; /* Add spacing above and below */
+      color: #FFD700; /* Gold color for stars */
+      font-size: 2rem; /* Adjust size as needed */
+      display: flex;
+      justify-content: center;
+      gap: 5px; /* Space between stars */
+    }
+
     /* Style the button */
     .transfer-button {
       margin-top: 20px;
+      margin-bottom: 40px; /* Added margin below */
       padding: 12px 24px;
       font-size: 1rem;
       color: #ffffff;
@@ -67,6 +81,10 @@
         width: 80%;
         font-size: 0.9rem;
       }
+
+      .star-rating {
+        font-size: 1.5rem; /* Smaller stars on small screens */
+      }
     }
   </style>
 </head>
@@ -80,10 +98,19 @@
     camera-controls 
     background-color="#000000"
     interaction-prompt="none"
-    shadow-intensity="0">
+    shadow-intensity="0"
+    scale="1.5 1.5 1.5">
     <!-- Fallback content for browsers that don't support <model-viewer> -->
     <p id="fallback-message" style="color: white; text-align: center;">Your browser does not support 3D models.</p>
   </model-viewer>
+
+  <!-- Star Rating -->
+  <div class="star-rating">
+    <i class="fas fa-star"></i>
+    <i class="fas fa-star"></i>
+    <i class="fas fa-star"></i>
+    <i class="fas fa-star-half-alt"></i>
+  </div>
 
   <!-- Transfer Domain Button -->
   <button class="transfer-button" onclick="transferDomain()">Transfer Domain</button>
