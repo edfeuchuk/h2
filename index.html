@@ -18,10 +18,11 @@
             height: 100vh;
         }
 
-        /* Canvas fills 85% of the screen width */
+        /* Model Container */
         #model-container {
-            width: 85vw; /* 85% of the viewport width */
-            height: calc(85vw * 9 / 16); /* Maintain 16:9 aspect ratio */
+            width: 100%; /* Full width */
+            height: calc(100vw * 9 / 16); /* Maintain 16:9 aspect ratio */
+            max-height: 80vh; /* Limit height on larger screens */
             position: relative;
         }
 
@@ -79,23 +80,27 @@
 
         loader.load('h2acty.glb', (gltf) => {
             truck = gltf.scene;
-            truck.scale.set(1, 1, 1); // Base scale
-            truck.position.set(0, -0.5, 0); // Center the truck
-            scene.add(truck);
 
-            // Adjust camera to fit model
+            // Calculate bounding box and scale the truck
             const box = new THREE.Box3().setFromObject(truck);
             const size = box.getSize(new THREE.Vector3());
             const maxDim = Math.max(size.x, size.y, size.z);
+            const scaleFactor = 4 / maxDim; // Adjust for desired size
+
+            truck.scale.set(scaleFactor, scaleFactor, scaleFactor);
+            truck.position.set(0, -size.y * scaleFactor / 2, 0); // Center the truck
+            scene.add(truck);
+
+            // Adjust camera distance
             const fov = camera.fov * (Math.PI / 180);
-            const distance = Math.abs(maxDim / Math.tan(fov / 2));
-            camera.position.z = distance * 1.5; // Zoom out to ensure visibility
+            const distance = Math.abs(maxDim * scaleFactor / Math.tan(fov / 2));
+            camera.position.z = distance * 1.5; // Further back for visibility
         });
 
         // Animation Loop
         function animate() {
             requestAnimationFrame(animate);
-            if (truck) truck.rotation.y += 0.002; // Slower rotation
+            if (truck) truck.rotation.y += 0.002; // Slow rotation
             renderer.render(scene, camera);
         }
         animate();
