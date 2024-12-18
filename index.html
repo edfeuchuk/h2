@@ -27,19 +27,23 @@
       background-color: #000000; /* Black background */
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start; /* Align items to the top */
+      padding-top: 30px; /* Padding above the image */
       z-index: 9999; /* Ensure it's on top */
+      transition: transform 1s ease, opacity 1s ease;
+      transform: translateY(0);
       opacity: 1;
-      transition: opacity 1s ease;
     }
 
-    #loading-screen.fade-out {
+    #loading-screen.slide-up {
+      transform: translateY(-100%);
       opacity: 0;
     }
 
     #loading-screen img {
-      max-width: 80%;
-      max-height: 80%;
+      max-width: 100%;
+      height: auto;
+      object-fit: contain;
     }
 
     /* Set up the body and html to use Flexbox for centering with black background */
@@ -103,7 +107,7 @@
     /* Style the button */
     .transfer-button {
       margin-top: 20px;
-      margin-bottom: 100px; /* Maintained margin below */
+      margin-bottom: 100px; /* Increased margin below */
       padding: 18px 24px;
       font-size: 1rem;
       color: #ffffff;
@@ -174,23 +178,33 @@
       window.location.href = "https://example.com/transfer-domain";
     }
 
-    // Hide fallback message when model loads successfully and fade out the loading screen
+    // Hide fallback message when model loads successfully and slide up the loading screen
     document.addEventListener('DOMContentLoaded', function() {
       const modelViewer = document.querySelector('model-viewer');
       const fallback = document.getElementById('fallback-message');
       const loadingScreen = document.getElementById('loading-screen');
-      
-      modelViewer.addEventListener('load', () => {
+
+      // Create promises for model load and timeout
+      const modelLoaded = new Promise((resolve) => {
+        modelViewer.addEventListener('load', resolve);
+      });
+
+      const timeout = new Promise((resolve) => {
+        setTimeout(resolve, 3000); // 3 seconds
+      });
+
+      // Wait for both the model to load and the timeout
+      Promise.all([modelLoaded, timeout]).then(() => {
         // Hide the fallback message
         fallback.style.display = 'none';
-        
-        // Start fading out the loading screen
-        loadingScreen.classList.add('fade-out');
-        
-        // After the transition, remove the loading screen from the DOM
+
+        // Add the slide-up class to trigger the transition
+        loadingScreen.classList.add('slide-up');
+
+        // After the transition duration, remove the loading screen from the DOM
         setTimeout(() => {
           loadingScreen.style.display = 'none';
-        }, 1000); // Duration matches the CSS transition duration
+        }, 1000); // 1 second matches the CSS transition duration
       });
 
       // Handle errors in loading the model
