@@ -31,8 +31,8 @@
 
     /* Style the model-viewer container */
     model-viewer {
-      width: 80vw; /* 80% of viewport width */
-      max-width: 1200px; /* Increased max-width for larger desktops */
+      width: 90vw; /* 80% of viewport width */
+      max-width: 1300px; /* Increased max-width for larger desktops */
       height: auto;
       aspect-ratio: 1.5; /* Maintain aspect ratio */
       margin: 0 auto;
@@ -41,27 +41,24 @@
     }
   .full-star-rating {
       color: #FFFFFF;
-      font-size: 6rem;
+      font-size: 4rem;
 	  }
 	  
-
     /* Style the star rating */
     .star-rating {
       margin: 20px 0; /* Add spacing above and below */
-      font-size: 6rem; /* Adjust size as needed */
+      font-size: 4rem; /* Adjust size as needed */
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 8px; /* Space between stars */
+      gap: 6px; /* Space between stars */
     }
 
     .half-star-rating {
       --color-full: white;
       --color-empty: #000000;
       --ratio: 50%;
-      font-size: 6rem;
-	
-
+      font-size: 4rem;
       color: var(--color-empty);
       background: linear-gradient(
         to right,
@@ -96,7 +93,7 @@
     /* Responsive adjustments */
     @media (max-width: 600px) {
       model-viewer {
-        width: 90vw; /* 90% of viewport width on smaller screens */
+        width: 95vw; /* 90% of viewport width on smaller screens */
       }
 
       .transfer-button {
