@@ -17,6 +17,31 @@
       box-sizing: border-box;
     }
 
+    /* Loading Screen Styles */
+    #loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #000000; /* Black background */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999; /* Ensure it's on top */
+      opacity: 1;
+      transition: opacity 1s ease;
+    }
+
+    #loading-screen.fade-out {
+      opacity: 0;
+    }
+
+    #loading-screen img {
+      max-width: 80%;
+      max-height: 80%;
+    }
+
     /* Set up the body and html to use Flexbox for centering with black background */
     body, html {
       width: 100%;
@@ -31,22 +56,24 @@
 
     /* Style the model-viewer container */
     model-viewer {
-      width: 90vw; /* 80% of viewport width */
+      width: 90vw; /* 90% of viewport width */
       max-width: 1300px; /* Increased max-width for larger desktops */
       height: auto;
       aspect-ratio: 1.5; /* Maintain aspect ratio */
-      margin: 0 auto;
+      margin: 30px auto 0 auto; /* Added 30px margin-top for padding above the model */
       background-color: #000000; /* Match background */
       /* Removed box-shadow and border-radius */
     }
-  .full-star-rating {
+
+    /* Style for full stars */
+    .full-star-rating {
       color: #FFFFFF;
       font-size: 4rem;
-	  }
-	  
+    }
+      
     /* Style the star rating */
     .star-rating {
-      margin: 20px 0; /* Add spacing above and below */
+      margin: 10px 0; /* Reduced spacing above and below */
       font-size: 4rem; /* Adjust size as needed */
       display: flex;
       justify-content: center;
@@ -54,6 +81,7 @@
       gap: 6px; /* Space between stars */
     }
 
+    /* Style for the half star */
     .half-star-rating {
       --color-full: white;
       --color-empty: #000000;
@@ -75,7 +103,7 @@
     /* Style the button */
     .transfer-button {
       margin-top: 20px;
-      margin-bottom: 100px; /* Added more margin below */
+      margin-bottom: 100px; /* Maintained margin below */
       padding: 18px 24px;
       font-size: 1rem;
       color: #ffffff;
@@ -93,17 +121,30 @@
     /* Responsive adjustments */
     @media (max-width: 600px) {
       model-viewer {
-        width: 95vw; /* 90% of viewport width on smaller screens */
+        width: 95vw; /* 95% of viewport width on smaller screens */
       }
 
       .transfer-button {
-        width: 80%;
+        width: 60%;
         font-size: 0.9rem;
+      }
+
+      .star-rating {
+        font-size: 2rem; /* Smaller stars on small screens */
+      }
+
+      .half-star-rating {
+        font-size: 2rem; /* Adjust font size for smaller screens */
       }
     }
   </style>
 </head>
 <body>
+
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <img src="Z2.png" alt="Loading..." />
+  </div>
 
   <!-- 3D Model Viewer -->
   <model-viewer 
@@ -119,9 +160,9 @@
   </model-viewer>
 
   <!-- Star Rating -->
-<div class="star-rating">
-<span class="full-star-rating">★★★</span><span class="half-star-rating">★</span>
-	</div>
+  <div class="star-rating">
+    <span class="full-star-rating">★★★</span><span class="half-star-rating">★</span>
+  </div>
 
   <!-- Transfer Domain Button -->
   <button class="transfer-button" onclick="transferDomain()">Transfer Domain</button>
@@ -133,13 +174,23 @@
       window.location.href = "https://example.com/transfer-domain";
     }
 
-    // Hide fallback message when model loads successfully
+    // Hide fallback message when model loads successfully and fade out the loading screen
     document.addEventListener('DOMContentLoaded', function() {
       const modelViewer = document.querySelector('model-viewer');
       const fallback = document.getElementById('fallback-message');
+      const loadingScreen = document.getElementById('loading-screen');
       
       modelViewer.addEventListener('load', () => {
+        // Hide the fallback message
         fallback.style.display = 'none';
+        
+        // Start fading out the loading screen
+        loadingScreen.classList.add('fade-out');
+        
+        // After the transition, remove the loading screen from the DOM
+        setTimeout(() => {
+          loadingScreen.style.display = 'none';
+        }, 1000); // Duration matches the CSS transition duration
       });
 
       // Handle errors in loading the model
