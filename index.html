@@ -17,7 +17,7 @@
       box-sizing: border-box;
     }
 
-    /* Set up the body to use Flexbox for centering */
+    /* Set up the body and html to use Flexbox for centering with black background */
     body, html {
       width: 100%;
       height: 100%;
@@ -25,7 +25,7 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      background-color: #f9f9f9;
+      background-color: #000000; /* Changed to black */
       font-family: Arial, sans-serif;
     }
 
@@ -37,10 +37,8 @@
       /* Maintain aspect ratio */
       aspect-ratio: 1.5;
       margin: 0 auto;
-      /* Optional: Add a shadow for better visibility */
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      border-radius: 10px;
-      background-color: #ffffff;
+      /* Removed box-shadow and border-radius */
+      background-color: #000000; /* Optional: Match background */
     }
 
     /* Style the button */
@@ -51,7 +49,7 @@
       color: #ffffff;
       background-color: #007BFF;
       border: none;
-      border-radius: 5px;
+      border-radius: 50px; /* Made pill-shaped */
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
@@ -81,12 +79,11 @@
     alt="3D Truck Model" 
     auto-rotate 
     camera-controls 
-    background-color="#ffffff"
-    auto-rotate-delay="0"
-    auto-rotate-speed="1"
+    background-color="#000000" <!-- Changed to black to match page background -->
+    shadow-intensity="0"
     >
     <!-- Fallback content for browsers that don't support <model-viewer> -->
-    Your browser does not support 3D models.
+    <p style="color: white;">Your browser does not support 3D models.</p>
   </model-viewer>
 
   <!-- Transfer Domain Button -->
@@ -100,10 +97,7 @@
     }
 
     // Optional: Customize auto-rotate speed using JavaScript
-    // Since <model-viewer> doesn't have a direct attribute for rotation speed,
-    // we can implement a custom rotation.
-
-    // Uncomment the following code if you prefer manual rotation control
+    // If you need more precise control over rotation speed, uncomment and use the code below.
 
     /*
     const modelViewer = document.querySelector('model-viewer');
