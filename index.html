@@ -38,7 +38,7 @@
       aspect-ratio: 1.5;
       margin: 0 auto;
       /* Removed box-shadow and border-radius */
-      background-color: #000000; /* Optional: Match background */
+      background-color: #000000; /* Match background */
     }
 
     /* Style the button */
@@ -80,10 +80,10 @@
     auto-rotate 
     camera-controls 
     background-color="#000000" <!-- Changed to black to match page background -->
-    shadow-intensity="0"
-    >
+    interaction-prompt="none" <!-- Disable the initial interaction prompt -->
+    shadow-intensity="0">
     <!-- Fallback content for browsers that don't support <model-viewer> -->
-    <p style="color: white;">Your browser does not support 3D models.</p>
+    <p style="color: white; text-align: center;">Your browser does not support 3D models.</p>
   </model-viewer>
 
   <!-- Transfer Domain Button -->
