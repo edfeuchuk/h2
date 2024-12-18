@@ -9,9 +9,6 @@
   <script type="module" src="https://unpkg.com/@google/model-viewer@latest/dist/model-viewer.min.js"></script>
   <script nomodule src="https://unpkg.com/@google/model-viewer@latest/dist/model-viewer-legacy.min.js"></script>
   
-  <!-- Import Font Awesome for star icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-p0b8v1vt7Aa38VvnzrN9KXX7mR/xz5J2bJZjZs1djgb69v15jX5VqO66q8e7K3LdPXHzC23Rr+yR4HbaG6B0ZQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  
   <style>
     /* Reset default margins and paddings */
     * {
@@ -46,7 +43,7 @@
     /* Style the star rating */
     .star-rating {
       margin: 20px 0; /* Add spacing above and below */
-      color: #FFFFFF; /* Changed to white */
+      color: #FFFFFF; /* White color for stars */
       font-size: 2rem; /* Adjust size as needed */
       display: flex;
       justify-content: center;
@@ -103,12 +100,12 @@
     <p id="fallback-message" style="color: white; text-align: center;">Your browser does not support 3D models.</p>
   </model-viewer>
 
-  <!-- Star Rating using Font Awesome -->
+  <!-- Star Rating using Unicode -->
   <div class="star-rating">
-    <i class="fas fa-star"></i>
-    <i class="fas fa-star"></i>
-    <i class="fas fa-star"></i>
-    <i class="fas fa-star-half-alt"></i> <!-- Consider changing to fa-star-half if needed -->
+    <span>&#9733;</span> <!-- Full Star -->
+    <span>&#9733;</span> <!-- Full Star -->
+    <span>&#9733;</span> <!-- Full Star -->
+    <span>&#189;</span>   <!-- Half Star -->
   </div>
 
   <!-- Transfer Domain Button -->
