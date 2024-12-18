@@ -14,19 +14,17 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
             height: 100vh;
         }
 
-        /* Model Container */
         #model-container {
-            width: 100%; /* Full width */
-            height: calc(100vw * 9 / 16); /* Maintain 16:9 aspect ratio */
-            max-height: 80vh; /* Limit height on larger screens */
+            width: 100%; 
+            height: calc(100vw * 9 / 16); /* 16:9 aspect ratio */
+            max-height: 80vh;
             position: relative;
+            background: #000; /* Just to see the container clearly */
         }
 
-        /* Button Styling */
         .transfer-button {
             margin-top: 20px;
             padding: 15px 40px;
@@ -45,28 +43,21 @@
     </style>
 </head>
 <body>
-    <!-- 3D Model Container -->
     <div id="model-container"></div>
-
-    <!-- Button -->
     <button class="transfer-button">Transfer Domain</button>
 
-    <!-- Include Three.js and GLTFLoader -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
     <script>
-        // Select container
         const container = document.getElementById('model-container');
 
-        // Create Scene, Camera, and Renderer
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(45, 16 / 9, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(45, 16/9, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(container.clientWidth, container.clientHeight);
         container.appendChild(renderer.domElement);
 
-        // Add Lighting
         const light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.5);
         scene.add(light);
 
@@ -74,38 +65,32 @@
         directionalLight.position.set(5, 10, 7.5);
         scene.add(directionalLight);
 
-        // Load 3D Model
         const loader = new THREE.GLTFLoader();
         let truck;
 
         loader.load('h2acty.glb', (gltf) => {
             truck = gltf.scene;
 
-            // Calculate bounding box and scale the truck
-            const box = new THREE.Box3().setFromObject(truck);
-            const size = box.getSize(new THREE.Vector3());
-            const maxDim = Math.max(size.x, size.y, size.z);
-            const scaleFactor = 4 / maxDim; // Adjust for desired size
+            // Set a large scale so it definitely appears large
+            truck.scale.set(10, 10, 10);
 
-            truck.scale.set(scaleFactor, scaleFactor, scaleFactor);
-            truck.position.set(0, -size.y * scaleFactor / 2, 0); // Center the truck
+            // Position it so it's visible (centered at origin)
+            truck.position.set(0, -1, 0);
+
             scene.add(truck);
 
-            // Adjust camera distance
-            const fov = camera.fov * (Math.PI / 180);
-            const distance = Math.abs(maxDim * scaleFactor / Math.tan(fov / 2));
-            camera.position.z = distance * 1.5; // Further back for visibility
+            // Move camera closer, so the truck appears large
+            camera.position.set(0, 0, 5);
+            camera.lookAt(0,0,0);
         });
 
-        // Animation Loop
         function animate() {
             requestAnimationFrame(animate);
-            if (truck) truck.rotation.y += 0.002; // Slow rotation
+            if (truck) truck.rotation.y += 0.002;
             renderer.render(scene, camera);
         }
         animate();
 
-        // Handle Resize
         window.addEventListener('resize', () => {
             const width = container.clientWidth;
             const height = container.clientHeight;
