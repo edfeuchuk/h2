@@ -35,7 +35,7 @@
     /* Style the model-viewer container */
     model-viewer {
       width: 80vw; /* 80% of viewport width */
-      max-width: 1000px; /* Maximum width to prevent excessive scaling */
+      max-width: 1200px; /* Increased max-width for larger desktops */
       height: auto;
       aspect-ratio: 1.5; /* Maintain aspect ratio */
       margin: 0 auto;
@@ -46,7 +46,7 @@
     /* Style the star rating */
     .star-rating {
       margin: 20px 0; /* Add spacing above and below */
-      color: #FFD700; /* Gold color for stars */
+      color: #FFFFFF; /* Changed to white */
       font-size: 2rem; /* Adjust size as needed */
       display: flex;
       justify-content: center;
@@ -98,18 +98,17 @@
     camera-controls 
     background-color="#000000"
     interaction-prompt="none"
-    shadow-intensity="0"
-    scale="1.5 1.5 1.5">
+    shadow-intensity="0">
     <!-- Fallback content for browsers that don't support <model-viewer> -->
     <p id="fallback-message" style="color: white; text-align: center;">Your browser does not support 3D models.</p>
   </model-viewer>
 
-  <!-- Star Rating -->
+  <!-- Star Rating using Font Awesome -->
   <div class="star-rating">
     <i class="fas fa-star"></i>
     <i class="fas fa-star"></i>
     <i class="fas fa-star"></i>
-    <i class="fas fa-star-half-alt"></i>
+    <i class="fas fa-star-half-alt"></i> <!-- Consider changing to fa-star-half if needed -->
   </div>
 
   <!-- Transfer Domain Button -->
