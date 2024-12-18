@@ -27,8 +27,7 @@
       background-color: #000000; /* Black background */
       display: flex;
       justify-content: center;
-      align-items: flex-start; /* Align items to the top */
-      padding-top: 30px; /* Padding above the image */
+      align-items: center; /* Center the image vertically and horizontally */
       z-index: 9999; /* Ensure it's on top */
       transition: transform 1s ease, opacity 1s ease;
       transform: translateY(0);
@@ -41,9 +40,10 @@
     }
 
     #loading-screen img {
-      max-width: 100%;
-      height: auto;
-      object-fit: contain;
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* Ensures the image covers the entire screen */
+      display: block; /* Removes any potential gaps below the image */
     }
 
     /* Set up the body and html to use Flexbox for centering with black background */
@@ -190,7 +190,7 @@
       });
 
       const timeout = new Promise((resolve) => {
-        setTimeout(resolve, 3000); // 3 seconds
+        setTimeout(resolve, 2000); // 2 seconds
       });
 
       // Wait for both the model to load and the timeout
@@ -204,7 +204,7 @@
         // After the transition duration, remove the loading screen from the DOM
         setTimeout(() => {
           loadingScreen.style.display = 'none';
-        }, 1000); // 1 second matches the CSS transition duration
+        }, 1000); // Duration matches the CSS transition duration
       });
 
       // Handle errors in loading the model
