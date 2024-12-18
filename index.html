@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>3D Truck Model</title>
+  <title>H2</title>
   
   <!-- Import the latest <model-viewer> library -->
   <script type="module" src="https://unpkg.com/@google/model-viewer@latest/dist/model-viewer.min.js"></script>
@@ -39,22 +39,28 @@
       background-color: #000000; /* Match background */
       /* Removed box-shadow and border-radius */
     }
+  .full-star-rating {
+      color: #FFFFFF;
+      font-size: 6rem;
+	  }
+	  
 
     /* Style the star rating */
     .star-rating {
       margin: 20px 0; /* Add spacing above and below */
-      font-size: 3rem; /* Adjust size as needed */
+      font-size: 6rem; /* Adjust size as needed */
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 5px; /* Space between stars */
+      gap: 8px; /* Space between stars */
     }
 
-    .star-rating span {
+    .half-star-rating {
       --color-full: white;
-      --color-empty: #ddd;
+      --color-empty: #000000;
       --ratio: 50%;
-      font-size: 3rem;
+      font-size: 6rem;
+	
 
       color: var(--color-empty);
       background: linear-gradient(
@@ -72,8 +78,8 @@
     /* Style the button */
     .transfer-button {
       margin-top: 20px;
-      margin-bottom: 60px; /* Added more margin below */
-      padding: 12px 24px;
+      margin-bottom: 100px; /* Added more margin below */
+      padding: 18px 24px;
       font-size: 1rem;
       color: #ffffff;
       background-color: #007BFF;
@@ -97,14 +103,6 @@
         width: 80%;
         font-size: 0.9rem;
       }
-
-      .star-rating {
-        font-size: 2rem; /* Smaller stars on small screens */
-      }
-
-      .star-rating span {
-        font-size: 2rem; /* Adjust font size for smaller screens */
-      }
     }
   </style>
 </head>
@@ -120,13 +118,13 @@
     interaction-prompt="none"
     shadow-intensity="0">
     <!-- Fallback content for browsers that don't support <model-viewer> -->
-    <p id="fallback-message" style="color: white; text-align: center;">Your browser does not support 3D models.</p>
+    <p id="fallback-message" style="color: white; text-align: center;">Loading...</p>
   </model-viewer>
 
   <!-- Star Rating -->
-  <div class="star-rating">
-    ★★★<span>★</span>
-  </div>
+<div class="star-rating">
+<span class="full-star-rating">★★★</span><span class="half-star-rating">★</span>
+	</div>
 
   <!-- Transfer Domain Button -->
   <button class="transfer-button" onclick="transferDomain()">Transfer Domain</button>
