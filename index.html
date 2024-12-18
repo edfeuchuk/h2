@@ -3,32 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>H2</title>
+  <title>H2 - 3D Truck Model</title>
   
-  <!-- Import the latest <model-viewer> library -->
+  <!-- Import <model-viewer> library -->
   <script type="module" src="https://unpkg.com/@google/model-viewer@latest/dist/model-viewer.min.js"></script>
   <script nomodule src="https://unpkg.com/@google/model-viewer@latest/dist/model-viewer-legacy.min.js"></script>
   
   <style>
-    /* Reset default margins and paddings */
-    * {
+    /* Reset */
+    *, *::before, *::after {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
-    /* Loading Screen Styles */
+    /* Body Styles */
+    body, html {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #000000;
+      font-family: Arial, sans-serif;
+      color: #FFFFFF;
+    }
+
+    /* Loading Screen */
     #loading-screen {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: #000000; /* Black background */
+      background-color: #000000;
       display: flex;
       justify-content: center;
-      align-items: center; /* Center the image vertically and horizontally */
-      z-index: 9999; /* Ensure it's on top */
+      align-items: center;
+      z-index: 9999;
       transition: transform 1s ease, opacity 1s ease;
       transform: translateY(0);
       opacity: 1;
@@ -42,55 +55,40 @@
     #loading-screen img {
       width: 100%;
       height: 100%;
-      object-fit: cover; /* Ensures the image covers the entire screen */
-      display: block; /* Removes any potential gaps below the image */
+      object-fit: cover;
+      display: block;
     }
 
-    /* Set up the body and html to use Flexbox for centering with black background */
-    body, html {
-      width: 100%;
-      height: 100%;
+    /* Model Viewer */
+    model-viewer {
+      width: 90vw;
+      max-width: 1300px;
+      height: auto;
+      aspect-ratio: 1.5;
+      margin: 30px auto 0 auto;
+      background-color: #000000;
+    }
+
+    /* Star Rating */
+    .star-rating {
+      margin: 10px 0;
+      font-size: 3rem;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-      background-color: #000000; /* Black background */
-      font-family: Arial, sans-serif;
+      gap: 6px;
     }
 
-    /* Style the model-viewer container */
-    model-viewer {
-      width: 90vw; /* 90% of viewport width */
-      max-width: 1300px; /* Increased max-width for larger desktops */
-      height: auto;
-      aspect-ratio: 1.5; /* Maintain aspect ratio */
-      margin: 30px auto 0 auto; /* Added 30px margin-top for padding above the model */
-      background-color: #000000; /* Match background */
-      /* Removed box-shadow and border-radius */
-    }
-
-    /* Style for full stars */
     .full-star-rating {
       color: #FFFFFF;
-      font-size: 4rem;
-    }
-      
-    /* Style the star rating */
-    .star-rating {
-      margin: 10px 0; /* Reduced spacing above and below */
-      font-size: 4rem; /* Adjust size as needed */
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 6px; /* Space between stars */
+      font-size: 3rem;
     }
 
-    /* Style for the half star */
     .half-star-rating {
       --color-full: white;
       --color-empty: #000000;
       --ratio: 50%;
-      font-size: 4rem;
+      font-size: 3rem;
       color: var(--color-empty);
       background: linear-gradient(
         to right,
@@ -104,41 +102,43 @@
       -webkit-text-fill-color: transparent;
     }
 
-    /* Style the button */
+    /* Transfer Button */
     .transfer-button {
       margin-top: 20px;
-      margin-bottom: 100px; /* Increased margin below */
+      margin-bottom: 100px;
       padding: 18px 24px;
-      font-size: 1rem;
-      color: #ffffff;
+      font-size: 1.2rem;
+      color: #FFFFFF;
       background-color: #007BFF;
       border: none;
-      border-radius: 50px; /* Pill-shaped */
+      border-radius: 50px;
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
 
-    .transfer-button:hover {
+    .transfer-button:hover,
+    .transfer-button:focus {
       background-color: #0056b3;
+      outline: none;
     }
 
-    /* Responsive adjustments */
+    /* Responsive Styles */
     @media (max-width: 600px) {
       model-viewer {
-        width: 95vw; /* 95% of viewport width on smaller screens */
+        width: 95vw;
       }
 
       .transfer-button {
         width: 60%;
-        font-size: 0.9rem;
+        font-size: 1rem;
       }
 
       .star-rating {
-        font-size: 2rem; /* Smaller stars on small screens */
+        font-size: 2rem;
       }
 
       .half-star-rating {
-        font-size: 2rem; /* Adjust font size for smaller screens */
+        font-size: 2rem;
       }
     }
   </style>
@@ -146,71 +146,65 @@
 <body>
 
   <!-- Loading Screen -->
-  <div id="loading-screen">
-    <img src="Z2.png" alt="Loading..." />
+  <div id="loading-screen" aria-hidden="true">
+    <img src="Z2.png" alt="Loading screen with logo" />
   </div>
 
   <!-- 3D Model Viewer -->
   <model-viewer 
     src="h2acty.glb" 
-    alt="3D Truck Model" 
+    alt="3D model of a truck" 
     auto-rotate 
     camera-controls 
     background-color="#000000"
     interaction-prompt="none"
     shadow-intensity="0">
-    <!-- Fallback content for browsers that don't support <model-viewer> -->
     <p id="fallback-message" style="color: white; text-align: center;">Loading...</p>
   </model-viewer>
 
   <!-- Star Rating -->
-  <div class="star-rating">
-    <span class="full-star-rating">★★★</span><span class="half-star-rating">★</span>
+  <div class="star-rating" aria-label="3.5 out of 5 stars">
+    <span class="full-star-rating" aria-hidden="true">★★★</span>
+    <span class="half-star-rating" aria-hidden="true">★</span>
   </div>
 
   <!-- Transfer Domain Button -->
-  <button class="transfer-button" onclick="transferDomain()">Transfer Domain</button>
+  <button 
+    class="transfer-button" 
+    onclick="transferDomain()" 
+    aria-label="Transfer your domain">
+    Transfer Domain
+  </button>
 
   <script>
-    // Function to handle the button click
     function transferDomain() {
-      // Replace the URL below with the desired destination
-      window.location.href = "https://example.com/transfer-domain";
+      window.location.href = "https://www.hover.com/transfer-in";
     }
 
-    // Hide fallback message when model loads successfully and slide up the loading screen
     document.addEventListener('DOMContentLoaded', function() {
       const modelViewer = document.querySelector('model-viewer');
       const fallback = document.getElementById('fallback-message');
       const loadingScreen = document.getElementById('loading-screen');
 
-      // Create promises for model load and timeout
-      const modelLoaded = new Promise((resolve) => {
+      const modelLoaded = new Promise(resolve => {
         modelViewer.addEventListener('load', resolve);
       });
 
-      const timeout = new Promise((resolve) => {
-        setTimeout(resolve, 2000); // 2 seconds
+      const timeout = new Promise(resolve => {
+        setTimeout(resolve, 2750); // 2.75 seconds
       });
 
-      // Wait for both the model to load and the timeout
       Promise.all([modelLoaded, timeout]).then(() => {
-        // Hide the fallback message
         fallback.style.display = 'none';
-
-        // Add the slide-up class to trigger the transition
         loadingScreen.classList.add('slide-up');
-
-        // After the transition duration, remove the loading screen from the DOM
         setTimeout(() => {
           loadingScreen.style.display = 'none';
-        }, 1000); // Duration matches the CSS transition duration
+        }, 1000); // Matches CSS transition duration
       });
 
-      // Handle errors in loading the model
-      modelViewer.addEventListener('error', (event) => {
+      modelViewer.addEventListener('error', event => {
         console.error('Error loading 3D model:', event);
-        fallback.style.display = 'block'; // Ensure the fallback is visible if there's an error
+        fallback.textContent = 'Failed to load the 3D model.';
       });
     });
   </script>
