@@ -9,15 +9,6 @@
   <script type="module" src="https://unpkg.com/@google/model-viewer@latest/dist/model-viewer.min.js"></script>
   <script nomodule src="https://unpkg.com/@google/model-viewer@latest/dist/model-viewer-legacy.min.js"></script>
   
-  <!-- Import Font Awesome for star icons -->
-  <link 
-    rel="stylesheet" 
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
-    integrity="sha512-p0b8v1vt7Aa38VvnzrN9KXX7mR/xz5J2bJZjZs1djgb69v15jX5VqO66q8e7K3LdPXHzC23Rr+yR4HbaG6B0ZQ==" 
-    crossorigin="anonymous" 
-    referrerpolicy="no-referrer" 
-  />
-  
   <style>
     /* Reset default margins and paddings */
     * {
@@ -52,11 +43,30 @@
     /* Style the star rating */
     .star-rating {
       margin: 20px 0; /* Add spacing above and below */
-      color: #FFFFFF; /* White color for stars */
-      font-size: 2rem; /* Adjust size as needed */
+      font-size: 3rem; /* Adjust size as needed */
       display: flex;
       justify-content: center;
+      align-items: center;
       gap: 5px; /* Space between stars */
+    }
+
+    .star-rating span {
+      --color-full: white;
+      --color-empty: #ddd;
+      --ratio: 50%;
+      font-size: 3rem;
+
+      color: var(--color-empty);
+      background: linear-gradient(
+        to right,
+        var(--color-full),
+        var(--color-full) var(--ratio),
+        var(--color-empty) var(--ratio),
+        var(--color-empty)
+      );
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     /* Style the button */
@@ -89,7 +99,11 @@
       }
 
       .star-rating {
-        font-size: 1.5rem; /* Smaller stars on small screens */
+        font-size: 2rem; /* Smaller stars on small screens */
+      }
+
+      .star-rating span {
+        font-size: 2rem; /* Adjust font size for smaller screens */
       }
     }
   </style>
@@ -109,12 +123,9 @@
     <p id="fallback-message" style="color: white; text-align: center;">Your browser does not support 3D models.</p>
   </model-viewer>
 
-  <!-- Star Rating using Font Awesome -->
+  <!-- Star Rating -->
   <div class="star-rating">
-    <i class="fas fa-star"></i>
-    <i class="fas fa-star"></i>
-    <i class="fas fa-star"></i>
-    <i class="fas fa-star-half"></i> <!-- Updated to fa-star-half for compatibility -->
+    ★★★<span>★</span>
   </div>
 
   <!-- Transfer Domain Button -->
