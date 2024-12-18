@@ -9,6 +9,15 @@
   <script type="module" src="https://unpkg.com/@google/model-viewer@latest/dist/model-viewer.min.js"></script>
   <script nomodule src="https://unpkg.com/@google/model-viewer@latest/dist/model-viewer-legacy.min.js"></script>
   
+  <!-- Import Font Awesome for star icons -->
+  <link 
+    rel="stylesheet" 
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+    integrity="sha512-p0b8v1vt7Aa38VvnzrN9KXX7mR/xz5J2bJZjZs1djgb69v15jX5VqO66q8e7K3LdPXHzC23Rr+yR4HbaG6B0ZQ==" 
+    crossorigin="anonymous" 
+    referrerpolicy="no-referrer" 
+  />
+  
   <style>
     /* Reset default margins and paddings */
     * {
@@ -100,12 +109,12 @@
     <p id="fallback-message" style="color: white; text-align: center;">Your browser does not support 3D models.</p>
   </model-viewer>
 
-  <!-- Star Rating using Unicode -->
+  <!-- Star Rating using Font Awesome -->
   <div class="star-rating">
-    <span>&#9733;</span> <!-- Full Star -->
-    <span>&#9733;</span> <!-- Full Star -->
-    <span>&#9733;</span> <!-- Full Star -->
-    <span>&#189;</span>   <!-- Half Star -->
+    <i class="fas fa-star"></i>
+    <i class="fas fa-star"></i>
+    <i class="fas fa-star"></i>
+    <i class="fas fa-star-half"></i> <!-- Updated to fa-star-half -->
   </div>
 
   <!-- Transfer Domain Button -->
