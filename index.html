@@ -1,103 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rotating Truck</title>
-    <style>
-        /* Reset Styles */
-        body, html {
-            margin: 0;
-            padding: 0;
-            background-color: #000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>3D Truck Model</title>
+  
+  <!-- Import the <model-viewer> library -->
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.min.js"></script>
+  
+  <style>
+    /* Reset default margins and paddings */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        #model-container {
-            width: 100%; 
-            height: calc(100vw * 9 / 16); /* 16:9 aspect ratio */
-            max-height: 80vh;
-            position: relative;
-            background: #000; /* Just to see the container clearly */
-        }
+    /* Set up the body to use Flexbox for centering */
+    body, html {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #f9f9f9;
+      font-family: Arial, sans-serif;
+    }
 
-        .transfer-button {
-            margin-top: 20px;
-            padding: 15px 40px;
-            font-size: 18px;
-            color: #fff;
-            background-color: #306fdb;
-            border: none;
-            border-radius: 60px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
+    /* Style the model-viewer container */
+    model-viewer {
+      width: 80%;
+      max-width: 600px;
+      height: auto;
+      /* Maintain aspect ratio */
+      aspect-ratio: 1.5;
+      margin: 0 auto;
+      /* Optional: Add a shadow for better visibility */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      background-color: #ffffff;
+    }
 
-        .transfer-button:hover {
-            background-color: #3375e5;
-        }
-    </style>
+    /* Style the button */
+    .transfer-button {
+      margin-top: 20px;
+      padding: 12px 24px;
+      font-size: 1rem;
+      color: #ffffff;
+      background-color: #007BFF;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .transfer-button:hover {
+      background-color: #0056b3;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+      model-viewer {
+        width: 90%;
+      }
+
+      .transfer-button {
+        width: 80%;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div id="model-container"></div>
-    <button class="transfer-button">Transfer Domain</button>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  <!-- 3D Model Viewer -->
+  <model-viewer 
+    src="h2acty.glb" 
+    alt="3D Truck Model" 
+    auto-rotate 
+    camera-controls 
+    background-color="#ffffff"
+    rotation-speed="0.2deg"
+    // Note: rotation-speed is a placeholder. <model-viewer> doesn't support this attribute directly.
+    // To control rotation speed, we can use the auto-rotate-delay attribute or animate via JavaScript.
+    >
+    <!-- Fallback content for browsers that don't support <model-viewer> -->
+    Your browser does not support 3D models.
+  </model-viewer>
 
-    <script>
-        const container = document.getElementById('model-container');
+  <!-- Transfer Domain Button -->
+  <button class="transfer-button" onclick="transferDomain()">Transfer Domain</button>
 
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(45, 16/9, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(container.clientWidth, container.clientHeight);
-        container.appendChild(renderer.domElement);
+  <script>
+    // Function to handle the button click
+    function transferDomain() {
+      // Replace the URL below with the desired destination
+      window.location.href = "https://example.com/transfer-domain";
+    }
 
-        const light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.5);
-        scene.add(light);
+    // Optional: Customize auto-rotate speed using JavaScript
+    // Since <model-viewer> doesn't have a direct attribute for rotation speed,
+    // you can control the rotation via JavaScript for more precise control.
 
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-        directionalLight.position.set(5, 10, 7.5);
-        scene.add(directionalLight);
+    const modelViewer = document.querySelector('model-viewer');
 
-        const loader = new THREE.GLTFLoader();
-        let truck;
+    // Function to rotate the model manually
+    function rotateModel() {
+      // Increase the rotation around the Y-axis
+      modelViewer.cameraOrbit = `${parseFloat(modelViewer.cameraOrbit.split(' ')[0]) + 0.05}deg ${modelViewer.cameraOrbit.split(' ')[1]} ${modelViewer.cameraOrbit.split(' ')[2]}`;
+    }
 
-        loader.load('h2acty.glb', (gltf) => {
-            truck = gltf.scene;
+    // Set an interval to rotate the model every 50 milliseconds
+    setInterval(rotateModel, 50);
+  </script>
 
-            // Set a large scale so it definitely appears large
-            truck.scale.set(10, 10, 10);
-
-            // Position it so it's visible (centered at origin)
-            truck.position.set(0, -1, 0);
-
-            scene.add(truck);
-
-            // Move camera closer, so the truck appears large
-            camera.position.set(0, 0, 5);
-            camera.lookAt(0,0,0);
-        });
-
-        function animate() {
-            requestAnimationFrame(animate);
-            if (truck) truck.rotation.y += 0.002;
-            renderer.render(scene, camera);
-        }
-        animate();
-
-        window.addEventListener('resize', () => {
-            const width = container.clientWidth;
-            const height = container.clientHeight;
-            renderer.setSize(width, height);
-            camera.aspect = width / height;
-            camera.updateProjectionMatrix();
-        });
-    </script>
 </body>
 </html>
