@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>3D Truck Model</title>
   
-  <!-- Import the <model-viewer> library -->
-  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-  <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.min.js"></script>
+  <!-- Import the latest <model-viewer> library -->
+  <script type="module" src="https://unpkg.com/@google/model-viewer@latest/dist/model-viewer.min.js"></script>
+  <script nomodule src="https://unpkg.com/@google/model-viewer@latest/dist/model-viewer-legacy.min.js"></script>
   
   <style>
     /* Reset default margins and paddings */
@@ -25,20 +25,19 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      background-color: #000000; /* Changed to black */
+      background-color: #000000; /* Black background */
       font-family: Arial, sans-serif;
     }
 
     /* Style the model-viewer container */
     model-viewer {
-      width: 80%;
-      max-width: 600px;
+      width: 80vw; /* 80% of viewport width */
+      max-width: 1000px; /* Maximum width to prevent excessive scaling */
       height: auto;
-      /* Maintain aspect ratio */
-      aspect-ratio: 1.5;
+      aspect-ratio: 1.5; /* Maintain aspect ratio */
       margin: 0 auto;
-      /* Removed box-shadow and border-radius */
       background-color: #000000; /* Match background */
+      /* Removed box-shadow and border-radius */
     }
 
     /* Style the button */
@@ -49,7 +48,7 @@
       color: #ffffff;
       background-color: #007BFF;
       border: none;
-      border-radius: 50px; /* Made pill-shaped */
+      border-radius: 50px; /* Pill-shaped */
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
@@ -61,7 +60,7 @@
     /* Responsive adjustments */
     @media (max-width: 600px) {
       model-viewer {
-        width: 90%;
+        width: 90vw; /* 90% of viewport width on smaller screens */
       }
 
       .transfer-button {
@@ -79,11 +78,11 @@
     alt="3D Truck Model" 
     auto-rotate 
     camera-controls 
-    background-color="#000000" <!-- Changed to black to match page background -->
-    interaction-prompt="none" <!-- Disable the initial interaction prompt -->
+    background-color="#000000"
+    interaction-prompt="none"
     shadow-intensity="0">
     <!-- Fallback content for browsers that don't support <model-viewer> -->
-    <p style="color: white; text-align: center;">Your browser does not support 3D models.</p>
+    <p id="fallback-message" style="color: white; text-align: center;">Your browser does not support 3D models.</p>
   </model-viewer>
 
   <!-- Transfer Domain Button -->
@@ -96,27 +95,21 @@
       window.location.href = "https://example.com/transfer-domain";
     }
 
-    // Optional: Customize auto-rotate speed using JavaScript
-    // If you need more precise control over rotation speed, uncomment and use the code below.
+    // Hide fallback message when model loads successfully
+    document.addEventListener('DOMContentLoaded', function() {
+      const modelViewer = document.querySelector('model-viewer');
+      const fallback = document.getElementById('fallback-message');
+      
+      modelViewer.addEventListener('load', () => {
+        fallback.style.display = 'none';
+      });
 
-    /*
-    const modelViewer = document.querySelector('model-viewer');
-
-    // Function to rotate the model manually
-    function rotateModel() {
-      // Get current orbit
-      let orbit = modelViewer.getCameraOrbit();
-      // Increase the theta (horizontal angle) by a small amount
-      orbit.theta = (parseFloat(orbit.theta) + 0.1) % 360;
-      // Apply the new orbit
-      modelViewer.cameraOrbit = `${orbit.theta}deg ${orbit.phi}deg ${orbit.radius}m`;
-      // Update the camera view
-      modelViewer.jumpCameraToGoal();
-    }
-
-    // Set an interval to rotate the model every 100 milliseconds
-    setInterval(rotateModel, 100);
-    */
+      // Handle errors in loading the model
+      modelViewer.addEventListener('error', (event) => {
+        console.error('Error loading 3D model:', event);
+        fallback.style.display = 'block'; // Ensure the fallback is visible if there's an error
+      });
+    });
   </script>
 
 </body>
