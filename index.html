@@ -105,7 +105,7 @@
     /* Transfer Button */
     .transfer-button {
       margin-top: 20px;
-      margin-bottom: 100px; /* Ensure spacing */
+      margin-bottom: 0;
       padding: 18px 24px;
       font-size: 1.2rem;
       color: #FFFFFF;
@@ -114,6 +114,8 @@
       border-radius: 50px;
       cursor: pointer;
       transition: background-color 0.3s ease;
+      width: 100%; /* Make button full width by default */
+      max-width: 400px; /* Prevent button from getting too wide */
     }
 
     .transfer-button:hover,
@@ -124,6 +126,10 @@
 
     /* Ensure extra space below button */
     .button-container {
+      width: 100%; /* Ensures button responsiveness */
+      display: flex;
+      justify-content: center;
+      align-items: center;
       margin-bottom: 100px; /* Add guaranteed space below the button */
     }
 
@@ -134,19 +140,12 @@
       }
 
       .transfer-button {
-        width: 60%;
-      }
-
-      .star-rating {
-        font-size: 2rem;
-      }
-
-      .half-star-rating {
-        font-size: 2rem;
+        padding: 14px 16px; /* Adjust padding for smaller screens */
+        font-size: 1rem; /* Adjust font size for smaller screens */
       }
 
       .button-container {
-        margin-bottom: 60px; /* Adjust for smaller screens */
+        margin-bottom: 60px; /* Adjust spacing for mobile */
       }
     }
   </style>
