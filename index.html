@@ -124,6 +124,11 @@
       margin-bottom: 120px;
     }
 
+    .spacer {
+      height: 150px;
+      width: 100%;
+    }
+
     @media (max-width: 600px) {
       model-viewer {
         width: 95vw;
@@ -131,11 +136,14 @@
 
       .transfer-button {
         padding: 14px 16px;
-        font-size: 1rem;
       }
 
       .button-container {
         margin-bottom: 80px;
+      }
+
+      .spacer {
+        height: 100px;
       }
     }
   </style>
@@ -169,6 +177,8 @@
       Transfer Domain
     </button>
   </div>
+
+  <div class="spacer"></div>
 
 <script>
     function transferDomain() {
